@@ -119,7 +119,6 @@ function Game(_opts) {
             let y1;
             const newValue = curBlock.val * 2;
             this.score += newValue;
-            debugger;
             combined[y][x] = Object.assign({}, nextBlock, { combined: { y: curBlock.startY, x: curBlock.startX }, val: newValue});
             nextBlock.val = 0;
             for (y1 = y+1; y1 < size_r - 1; y1++) {
@@ -443,3 +442,4 @@ function Game(_opts) {
   }
 
 }
+

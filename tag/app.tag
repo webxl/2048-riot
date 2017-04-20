@@ -146,7 +146,6 @@
     this.on('moved', () => {
       this.gameStatus = this.game.gameStatus();
       this.gameScore = this.game.score;
-      console.log(this.gameScore)
       this.update(/*{ gameStatus: this.game.gameStatus() }*/);
     });
 

@@ -70,7 +70,7 @@
 //    this.parent.on('updateblocks', () => {
 //      console.log('update');
 //      //this.update();
-//    })
+//    });
 
     this.on('before-unmount', function() {
       vent.off('moveblocks', this.move);
@@ -78,9 +78,14 @@
     });
 
     this.on('updated', function() {
-      //this.label.setAttribute('class', this.getAnimations());
-//      self.root.style.left = 0;
-//      self.root.style.top = 0;
+
+      let minFontSize = 5, maxFontSize = 100, compressor = .2, el = this.root;
+
+      el.style.fontSize = Math.max(Math.min(el.clientWidth / (compressor*10), Math.min(el.clientHeight, maxFontSize)), minFontSize) + 'px';
+
+      // this.label.setAttribute('class', this.getAnimations());
+      // self.root.style.left = 0;
+      // self.root.style.top = 0;
     });
     this.on('mount', function() {
       //console.log(this.value);

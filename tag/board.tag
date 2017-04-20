@@ -34,6 +34,8 @@
 
     this.on('mount', () => {
       this.boardRows = cloneMatrix(this.game.rows);
+      window.addEventListener('resize', this.update.bind(this));
+      window.addEventListener('orientationchange', this.update.bind(this));
       this.update();
     });
 

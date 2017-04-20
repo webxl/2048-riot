@@ -2,12 +2,23 @@
 module.exports = function(config) {
   config.set({
     //logLevel: 'debug',
+    //browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
+
+    // you can define custom flags
+    customLaunchers: {
+      Chrome_without_security: {
+        base: 'Chrome',
+        flags: ['--disable-web-security']
+      }
+    },
     frameworks: ['mocha', 'sinon-chai',  'riot'],
     plugins: [
       'karma-mocha',
       'karma-sinon-chai',
-     'karma-mocha-reporter',
+      'karma-mocha-reporter',
       'karma-phantomjs-launcher',
+      //'karma-chrome-launcher',
       'karma-riot',
       'karma-babel-preprocessor'
     ],
@@ -24,7 +35,6 @@ module.exports = function(config) {
       'test/game.js': ['babel'],
       'js/game.js': ['babel']
     },
-    browsers: ['PhantomJS'],
    reporters: ['mocha'],
     riotPreprocessor: {
       options: {

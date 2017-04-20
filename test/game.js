@@ -19,6 +19,17 @@ describe('processMove', function () {
     bi.newGame();
     expect(bi.rows.reduce((total, row) => total + row.filter(e => e.val > 0).length, 0)).to.equal(2);
   });
+
+  it('should add start adding higher number blocks after there\'s a block 1/8 of the goal block', function () {
+    var bi = new Game();
+    bi.newGame();
+    var matrix = [[128, 128, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    bi.rows = bi.addProps(matrix);
+    bi.processMove('left');
+    expect(bi.maxBlockValue).to.equal(256);
+    expect(bi.getNewBlockValue(true)).to.equal(4);
+
+  });
   //
   // 4 2 0 0
   // 4 2 2 0
@@ -57,7 +68,7 @@ describe('processMove', function () {
     bi.rows = bi.addProps([[0, 2, 0, 0], [0, 0, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
     bi.processMove('left');
     expect(bi.rows.reduce((total, row) => total + row.filter(e => e.val > 0).length, 0)).to.equal(3);
-    bi.rows = bi.addProps([[2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
+    bi.rows = bi.addProps([[2, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]);
     bi.processMove('left');
     expect(bi.rows.reduce((total, row) => total + row.filter(e => e.val > 0).length, 0)).to.equal(2);
   });
@@ -76,14 +87,12 @@ describe('processMove', function () {
     var bi = new Game();
     bi.newGame();
     expect(bi.gameStatus()).to.equal('active');
-    bi.rows = bi.addProps([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
+    bi.rows = bi.addProps([[1, 1, 3, 48], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]);
     bi.processMove('left');
-    expect(bi.removeProps(bi.rows)).to.deep.equal([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
     expect(bi.gameStatus()).to.equal('loss');
   });
 
   function testMoves(matrix, direction, expResult) {
-//console.log('down:');
     var bi = new Game();
     bi.newGame();
     bi.rows = bi.addProps(matrix);

@@ -7,18 +7,24 @@
 
     // look into https://github.com/any-code/riot-animation-context
 
-    this.parent.parent.on('moveblocks', () => {
-      this.trigger('moveblocks');
-    });
-
 
     isMoving(y,x) {
       return this.boardRows[y][x].delta.dx || this.boardRows[y][x].delta.dy;
     }
 
+//    var self = this;
+//    vent.on('moved', (matrix) => {
+//      opts.bv = matrix[opts.y][opts.x];
+//      self.update()
+//    });
+
     this.on('mount', () => {
       this.block = opts.bv;
     });
+
+//    this.on('before-unmount', function() {
+//      vent.off('*');
+//    });
 
   </script>
 </space>

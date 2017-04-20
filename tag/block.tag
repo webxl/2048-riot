@@ -5,7 +5,7 @@
     this.mixin(riotAnimate);
 
     this.getAnimations = () => {
-      var classes = [];
+      const classes = [];
       if (this.opts.new)
         classes.push('bounceIn');
       if (this.opts.combined)
@@ -16,39 +16,56 @@
     };
 
     this.getLevelClass = () => {
-      var val = this.opts.bv.val;
-      var level = Math.log(val) / Math.log(2);
+      const val = this.opts.bv.val;
+      const level = Math.log(val) / Math.log(2);
       return 'level' + level;
     };
 
-    this.parent.on('moveblocks', () => {
+    const self = this;
 
-      var delta = this.opts.bv.delta;
+    this.move = () => {
+
+      const delta = self.opts.bv.delta;
       if (delta) {
 
-        var marginAdjustX = delta.dx * 20, marginAdjustY = delta.dy * 20;
+        const marginAdjustX = delta.dx * 20, marginAdjustY = delta.dy * 20;
 
-        this.moving = true;
+        self.moving = true;
 
-        if (delta.removed || delta.combined)
-          this.animatedUnmount();
+        if (delta.removed)
+          self.animatedUnmount();
 
-        this.update();
+        self.update();
 
-        Velocity(this.root,
+        Velocity(self.root,
             {
-              left: (this.root.offsetWidth * delta.dx) + marginAdjustX + 'px',
-              top: (this.root.offsetHeight * delta.dy) + marginAdjustY + 'px'
+              left: (self.root.offsetWidth * delta.dx) + marginAdjustX + 'px',
+              top: (self.root.offsetHeight * delta.dy) + marginAdjustY + 'px'
             },
             {
               duration: 100,
               complete: () => {
-                this.moving = false;
+                self.moving = false;
               }
             }
         );
       }
-    });
+    };
+
+    this.drag = (dir, dx, dy) => {
+
+      if (!self.opts.bv.possibleMoves.some(m => m == dir)) return;
+
+      const translate
+        = `translate3d(${dx}px, ${dy}px, 0)`;
+      self.root.style.transform = translate;
+      self.root.style.mozTransform = translate;
+      self.root.style.webkitTransform = translate;
+
+    };
+
+    vent.on('moveblocks', this.move);
+    vent.on('drag', this.drag);
 
 //    this.parent.on('updateblocks', () => {
 //      console.log('update');
@@ -56,15 +73,17 @@
 //    })
 
     this.on('before-unmount', function() {
+      vent.off('moveblocks', this.move);
+      vent.off('drag', this.drag);
     });
 
     this.on('updated', function() {
       //this.label.setAttribute('class', this.getAnimations());
-
+//      self.root.style.left = 0;
+//      self.root.style.top = 0;
     });
     this.on('mount', function() {
       //console.log(this.value);
-
     });
   </script>
 </block>

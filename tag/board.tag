@@ -1,10 +1,11 @@
 <board>
   <div class="row" each={ row, y in boardRows }>
-    <space each= { tmp, x in row } bv={ getVal(y, x) } new={ isNew(y,x) } combined={ isCombined(y,x) } class={ new: isNew(y,x)  }></space>
+    <space each= { tmp, x in row } bv={ getVal(y, x) } new={ isNew(y,x) } x={x} y={y} combined={ isCombined(y,x) } class={ new: isNew(y,x) }></space>
   </div>
 
   <script>
     this.game = opts.game;
+    this.timeout = null;
 
     function cloneMatrix(matrix) {
       var size = matrix.length, newMatrix = new Array(size);
@@ -36,7 +37,7 @@
       this.update();
     });
 
-    this.on('new', () => {
+    this.parent.on('newgame', () => {
       this.boardRows = cloneMatrix(this.game.rows);
       this.update();
     });
@@ -46,17 +47,24 @@
       if (dir) {
 
         //this.boardRows = cloneMatrix(this.game.rows);
+        if (this.game.gameStatus() != 'active') return;
+
+
+        if (this.timeout) {
+          return;
+        }
 
         this.lastBoardRows = this.boardRows = updateMoves(this.boardRows, this.game.getBlockMovements(dir));
 
-          this.trigger('moveblocks');
+        vent.trigger('moveblocks');
 
-          setTimeout(() => {
+        this.timeout = setTimeout(() => {
               if (dir) this.game.processMove(dir);
               this.boardRows = cloneMatrix(this.game.rows);
               this.update();
-              //this.trigger('updateblocks');
-
+            this.parent.trigger('moved');
+          //vent.trigger('moved', this.boardRows);
+          this.timeout = null;
           }, 100);
 
       } else {
@@ -80,6 +88,10 @@
     getVal(y,x) {
       return this.boardRows[y][x];
     }
+
+    this.on('before-update', function() {
+      vent.off('*');
+    });
 
 
   </script>

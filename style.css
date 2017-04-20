@@ -25,7 +25,7 @@ board {
   position: absolute;
   left: 0;
   right: 0;
-  top: 60px;
+  top: 85px;
   bottom: 0;
 }
 .row {
@@ -132,10 +132,10 @@ button {
   font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
   font-size: .8em;
   font-weight: bold;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 8px 12px;
 }
-button:hover {
+.no-touch button:hover {
   background-color: #c3c3c3;
 }
 size {
@@ -153,8 +153,10 @@ size {
 }
 .sizeWrapper {
   display: inline-block;
-  padding: 8px 12px;
   position: relative;
+}
+.undoWrapper {
+  margin-top: 5px;
 }
 .level15 {
   background-color: #A71818;
@@ -200,6 +202,18 @@ size {
 }
 .level1 {
   background-color: #FFE4AF;
+}
+@media screen and (min-width: 500px) {
+  .undoWrapper {
+    display: inline-block;
+    margin-top: 0;
+  }
+  board {
+    top: 60px;
+  }
+  button {
+    margin-right: 10px;
+  }
 }
 .fade.riot-animate {
   transition: 0.5s linear all;

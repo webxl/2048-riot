@@ -4,11 +4,13 @@
     <div class="controls">
       <button type="button" name="button" id="newGame" onclick={newGame}>New Game</button>
       <div class="sizeWrapper">
-      <button type="button" name="button" id="setSize" onclick={showSizeDropdown}>Size: { boardSize } &#9660; </button>
-      <size if="{ settingSize() }"></size>
+        <button type="button" name="button" id="setSize" onclick={showSizeDropdown}>Size: { boardSize } &#9660; </button>
+        <size if="{ settingSize() }"></size>
       </div>
-      <button id="undo" onclick={undoClick}>Undo</button>
-      <button id="redo" onclick={redoClick}>Redo</button>
+      <div class="undoWrapper">
+        <button id="undo" onclick={undoClick}>Undo</button>
+        <button id="redo" onclick={redoClick}>Redo</button>
+      </div>
     </div>
 
     <score></score>
@@ -27,6 +29,8 @@
 
   <script>
 
+    const DRAG_ENABLED = false;
+
     this.boardSize = 4;
 
     this.game = new Game({
@@ -39,36 +43,57 @@
 
     this.settingBoardSize = false;
 
+    this.isTouchEnabled = ("ontouchstart" in document.documentElement);
+
     this.on('mount', () => {
+
       setTimeout(this.setFocus, 300);
 
+      document.documentElement.className += (this.isTouchEnabled ? ' touch' : ' no-touch');
+
       const mc = new Hammer.Manager(this.board);
-      const pan = new Hammer.Pan({
-        threshold: 5
-      });
+
       const swipe = new Hammer.Swipe({
         threshold: 20
       });
-      pan.recognizeWith(swipe);
 
-      mc.add(pan);
+      if (DRAG_ENABLED) { // WIP
+        const pan = new Hammer.Pan({
+          threshold: 5
+        });
+        pan.recognizeWith(swipe);
+        mc.add(pan);
+        mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+        mc.on("pan", ev => {
+          let dir, axis;
+
+          switch (ev.direction) {
+            case Hammer.DIRECTION_LEFT: dir = 'left'; axis = 'x'; break;
+            case Hammer.DIRECTION_RIGHT: dir = 'right'; axis = 'x'; break;
+            case Hammer.DIRECTION_UP: dir = 'up';  axis = 'y'; break;
+            case Hammer.DIRECTION_DOWN: dir = 'down';  axis = 'y';break;
+          }
+
+          vent.trigger('drag', dir, axis === 'x' ? ev.deltaX:0, axis === 'y' ? ev.deltaY:0);
+
+        });
+
+        mc.on("panstart1", ev => {
+          const START_X = 0, START_Y = 0;
+          let dir;
+
+          switch (ev.direction) {
+            case Hammer.DIRECTION_LEFT: dir = 'left'; break;
+            case Hammer.DIRECTION_RIGHT: dir = 'right'; break;
+            case Hammer.DIRECTION_UP: dir = 'up'; break;
+            case Hammer.DIRECTION_DOWN: dir = 'down'; break;
+          }
+
+        });
+      }
+
       mc.add(swipe);
-
-      mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-
-      mc.on("pan", ev => {
-        let dir, axis;
-
-        switch (ev.direction) {
-          case Hammer.DIRECTION_LEFT: dir = 'left'; axis = 'x'; break;
-          case Hammer.DIRECTION_RIGHT: dir = 'right'; axis = 'x'; break;
-          case Hammer.DIRECTION_UP: dir = 'up';  axis = 'y'; break;
-          case Hammer.DIRECTION_DOWN: dir = 'down';  axis = 'y';break;
-        }
-
-        vent.trigger('drag', dir, axis == 'x' ? ev.deltaX:0, axis == 'y' ? ev.deltaY:0);
-
-      });
 
       mc.on('swipe', e => {
         let dir;
@@ -79,19 +104,6 @@
           case Hammer.DIRECTION_DOWN: dir = 'down'; break;
         }
         this.sendMove(dir);
-      });
-
-      mc.on("panstart1", ev => {
-        const START_X = 0, START_Y = 0;
-        let dir;
-
-        switch (ev.direction) {
-          case Hammer.DIRECTION_LEFT: dir = 'left'; break;
-          case Hammer.DIRECTION_RIGHT: dir = 'right'; break;
-          case Hammer.DIRECTION_UP: dir = 'up'; break;
-          case Hammer.DIRECTION_DOWN: dir = 'down'; break;
-        }
-
       });
 
     });
@@ -121,10 +133,13 @@
       });
       this.trigger('newgame');
       this.gameStatus = 'active';
+      this.gameScore = 0;
       this.updateGame();
     }
 
     setFocus(e) {
+      if (this.isTouchEnabled) return;
+
       this.input.focus();
       if (e) e.preventUpdate = true;
     }

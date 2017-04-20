@@ -4,7 +4,7 @@
   </div>
 
   <style>
-    div {
+    size div {
       cursor: pointer;
       padding: 4px;
     }

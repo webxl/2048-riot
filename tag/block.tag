@@ -21,6 +21,8 @@
       return 'level' + level;
     };
 
+    this.blockMargin = 0;
+
     const self = this;
 
     this.move = () => {
@@ -28,7 +30,8 @@
       const delta = self.opts.bv.delta;
       if (delta) {
 
-        const marginAdjustX = delta.dx * 20, marginAdjustY = delta.dy * 20;
+
+        const marginAdjustX = delta.dx * self.blockMargin, marginAdjustY = delta.dy * self.blockMargin;
 
         self.moving = true;
 
@@ -72,6 +75,9 @@
 //      //this.update();
 //    });
 
+    this.on('mount', function() {
+
+    });
     this.on('before-unmount', function() {
       vent.off('moveblocks', this.move);
       vent.off('drag', this.drag);
@@ -83,12 +89,18 @@
 
       el.style.fontSize = Math.max(Math.min(el.clientWidth / (compressor*10), Math.min(el.clientHeight, maxFontSize)), minFontSize) + 'px';
 
+      if (this.root && this.root.parentElement) {
+        const style = this.root.parentElement.currentStyle || window.getComputedStyle(this.root.parentElement);
+
+        this.blockMargin = parseInt(style.marginRight, 10) * 2;
+      }
+
       // this.label.setAttribute('class', this.getAnimations());
       // self.root.style.left = 0;
       // self.root.style.top = 0;
     });
     this.on('mount', function() {
-      //console.log(this.value);
+
     });
   </script>
 </block>

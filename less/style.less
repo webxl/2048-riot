@@ -28,7 +28,7 @@ block {
   align-items: center;
   background-color: rgba(255, 255, 255, .5);
   display: flex;
-  font-size: calc(~"8vw + 6vh");
+  //font-size: calc(~"8vw + 6vh");
   font-weight: bold;
   height: 100%;
   text-align: center;
@@ -44,19 +44,20 @@ block {
     flex: 1;
   }
 
-  &.level7, &.level8, &.level9 {
-    font-size: calc(~"6vw + 4vh");
-  }
-
-  &.level10, &.level11, &.level12, &.level13 {
-    font-size: calc(~"4vw + 3vh");
-  }
+  // probably unnecessary because of text metrics calc in block "updated" event
+  //&.level7, &.level8, &.level9 {
+  //  font-size: calc(~"6vw + 4vh");
+  //}
+  //
+  //&.level10, &.level11, &.level12, &.level13 {
+  //  font-size: calc(~"4vw + 3vh");
+  //}
 }
 
 space {
   background-color: lightgray;
   display: inline-block;
-  margin: 10px;
+  margin: 5px;
   position: relative;
   width: 25%;
 
@@ -112,7 +113,7 @@ score > div {
 header {
   display: flex;
   align-items: center;
-  padding: 8px 20px ; // added 10px for space el margin
+  padding: 8px 10px ; // added 5px for space el margin
 }
 
 .controls, score {
@@ -205,12 +206,19 @@ size {
     margin-top: 0;
   }
 
+  header {
+    padding: 8px 20px ; // added 10px for space el margin
+  }
+
   board {
     top: 60px;
   }
 
   button {
     margin-right: 10px;
+  }
+  space {
+    margin: 10px;
   }
 }
 

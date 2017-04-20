@@ -37,7 +37,6 @@ block {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.5);
   display: flex;
-  font-size: calc(8vw + 6vh);
   font-weight: bold;
   height: 100%;
   text-align: center;
@@ -52,21 +51,10 @@ block > label {
   display: block;
   flex: 1;
 }
-block.level7,
-block.level8,
-block.level9 {
-  font-size: calc(6vw + 4vh);
-}
-block.level10,
-block.level11,
-block.level12,
-block.level13 {
-  font-size: calc(4vw + 3vh);
-}
 space {
   background-color: lightgray;
   display: inline-block;
-  margin: 10px;
+  margin: 5px;
   position: relative;
   width: 25%;
 }
@@ -113,7 +101,7 @@ score > div {
 header {
   display: flex;
   align-items: center;
-  padding: 8px 20px ;
+  padding: 8px 10px ;
 }
 .controls,
 score {
@@ -208,11 +196,17 @@ size {
     display: inline-block;
     margin-top: 0;
   }
+  header {
+    padding: 8px 20px ;
+  }
   board {
     top: 60px;
   }
   button {
     margin-right: 10px;
+  }
+  space {
+    margin: 10px;
   }
 }
 .fade.riot-animate {

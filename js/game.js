@@ -1,14 +1,14 @@
-if (typeof Object.assign != 'function') {
+if (typeof Object.assign !== 'function') {
   Object.assign = function(target) {
     'use strict';
-    if (target == null) {
+    if (target === null) {
       throw new TypeError('Cannot convert undefined or null to object');
     }
 
     target = Object(target);
     for (let index = 1; index < arguments.length; index++) {
       const source = arguments[index];
-      if (source != null) {
+      if (source !== null) {
         for (let key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
@@ -118,7 +118,7 @@ function Game(_opts) {
           if (curBlock.val === nextBlock.val && !curBlock.combined && !nextBlock.combined) {
             let y1;
             const newValue = curBlock.val * 2;
-            this.score += newValue;
+
             combined[y][x] = Object.assign({}, nextBlock, { combined: { y: curBlock.startY, x: curBlock.startX }, val: newValue});
             nextBlock.val = 0;
             for (y1 = y+1; y1 < size_r - 1; y1++) {
@@ -203,7 +203,6 @@ function Game(_opts) {
     return moves;
   };
 
-
   this.getNewBlockValue = (notRandom) => (this.maxBlockValue >= opts.goal * HIGH_BLOCK_PERMITTED && (notRandom || Math.random() > HIGH_LOW_RATIO)) ? NEW_BLOCK_VAL_HIGH: NEW_BLOCK_VAL_LOW;
 
   this.processMove = direction => {
@@ -236,6 +235,8 @@ function Game(_opts) {
       Object.assign(this.rows[c.y][c.x], getDefaults(c.y, c.x, newVal, null), { isNew: true });
 
     });
+
+    this.score += this.getMoveScore(this.rows);
 
     this.rows = this.updateProps(this.rows);
 
@@ -414,6 +415,19 @@ function Game(_opts) {
       }
     }
     return newMatrix;
+  };
+
+  this.getMoveScore = (matrix) => {
+    let moveScore = 0;
+    const size = matrix.length;
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        if (matrix[y][x].combined) {
+          moveScore += matrix[y][x].val;
+        }
+      }
+    }
+    return moveScore;
   };
 
   function getDefaults (y, x, val, moves) {

@@ -13,9 +13,9 @@
       </div>
     </div>
 
-    <goal title="Use the arrow keys or swipe to get at least one block face value to 2048" onclick={showAbout}>2048</goal>
+    <goal title="Use the arrow keys or swipe to get at least one block face value to {goal}" onclick={showAbout}>{goal}</goal>
 
-    <about if={ aboutVisible } ></about>
+    <about if={ aboutVisible } goal="{goal}"></about>
 
     <score></score>
 
@@ -41,6 +41,7 @@
     });
 
     this.game.newGame();
+
 
     this.gameScore = 0;
 
@@ -139,6 +140,8 @@
       this.trigger('newgame');
       this.gameStatus = 'active';
       this.gameScore = 0;
+      this.goal = this.game.opts.goal;
+
       this.updateGame();
     }
 

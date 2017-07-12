@@ -6,7 +6,7 @@
       By Matt Motherway
     </p>
     <p>
-      Object: Use the arrow keys or swipe to get at least one block face value to 2048.
+      Object: Use the arrow keys or swipe to get at least one block face value to {opts.goal}.
     </p>
     <p>
       <a href="https://github.com/webxl/2048-riot" onclick={goToThisUrl}>GitHub Project</a>
@@ -14,6 +14,7 @@
   </div>
 
   <script>
+
     closeAbout() {
       this.parent.aboutVisible = false;
       this.unmount(true);

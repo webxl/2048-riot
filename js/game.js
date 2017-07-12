@@ -43,6 +43,7 @@ function Game(_opts) {
   this.scoreRedoStack = [];
 
   this.score = 0;
+  this.opts = opts;
 
   this.getStartBlocks = (blocks, boardSize) => {
     const loc = [Math.floor(boardSize * Math.random()), Math.floor(boardSize * Math.random())];
@@ -86,6 +87,18 @@ function Game(_opts) {
     opts = Object.assign({}, opts, newOpts);
     this.boardSize = opts.size;
     this.maxBlockValue = 2;
+
+    let newGoal;
+
+    switch (this.boardSize) {
+      case 2: newGoal = 32; break;
+      case 3: newGoal = 512; break;
+      case 4: newGoal = 2048; break;
+      case 5: newGoal = 8192; break;
+      default: newGoal = 32768; break;
+    }
+
+    this.opts.goal = opts.goal = newGoal;
 
     let gameBlocks = this.getStartBlocks([], this.boardSize);
     gameBlocks = this.getStartBlocks(gameBlocks, this.boardSize);

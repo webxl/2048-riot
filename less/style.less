@@ -75,24 +75,24 @@ block, space {
   border-radius: @defaultBorderRadius;
 }
 
-win, lose {
+winlose {
   font-family: 'Bowlby One', cursive;
   font-size: 15vw;
   position: absolute;
   top: 43%;
-  z-index: 5;
+  z-index: 500;
   text-shadow: 3px -2px #000, 6px -4px #fff;
   width: 100%;
   text-align: center;
   left: 0;
 }
 
-win {
+.win {
   color: @color-14;
 }
 
 
-lose {
+.lose {
   color: @color-2;
 }
 
@@ -105,6 +105,7 @@ score > div {
   text-align: center;
 }
 
+
 .status {
   position: absolute;
   left: -1000px;
@@ -116,8 +117,15 @@ header {
   padding: 8px 10px ; // added 5px for space el margin
 }
 
-.controls, score {
+.controls, score, goal {
   flex: 1;
+}
+
+goal {
+  font-size: 1.2em;
+  flex-basis: 80px;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px #ddd;
 }
 
 .controls {
@@ -138,6 +146,10 @@ button {
   margin-right: 5px;
   padding: 8px 12px;
 
+  &:disabled {
+    color: gray;
+    cursor: not-allowed;
+  }
 
 }
 

@@ -68,22 +68,21 @@ block,
 space {
   border-radius: 8px;
 }
-win,
-lose {
+winlose {
   font-family: 'Bowlby One', cursive;
   font-size: 15vw;
   position: absolute;
   top: 43%;
-  z-index: 5;
+  z-index: 500;
   text-shadow: 3px -2px #000, 6px -4px #fff;
   width: 100%;
   text-align: center;
   left: 0;
 }
-win {
+.win {
   color: #A71818;
 }
-lose {
+.lose {
   color: #8CCDCD;
 }
 score > div {
@@ -104,8 +103,15 @@ header {
   padding: 8px 10px ;
 }
 .controls,
-score {
+score,
+goal {
   flex: 1;
+}
+goal {
+  font-size: 1.2em;
+  flex-basis: 80px;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px #ddd;
 }
 .controls {
   flex-grow: 1;
@@ -122,6 +128,10 @@ button {
   font-weight: bold;
   margin-right: 5px;
   padding: 8px 12px;
+}
+button:disabled {
+  color: gray;
+  cursor: not-allowed;
 }
 .no-touch button:hover {
   background-color: #c3c3c3;

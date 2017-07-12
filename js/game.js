@@ -39,6 +39,9 @@ function Game(_opts) {
 
   this.boardUndoStack = [];
   this.boardRedoStack = [];
+  this.scoreUndoStack = [];
+  this.scoreRedoStack = [];
+
   this.score = 0;
 
   this.getStartBlocks = (blocks, boardSize) => {
@@ -89,7 +92,7 @@ function Game(_opts) {
 
     this.rows = [];
     this.score = 0;
-    
+
     for (let i = 0; i < this.boardSize; i++) {
       const row = [];
       for (let j = 0; j < this.boardSize; j++) {
@@ -238,6 +241,9 @@ function Game(_opts) {
 
     });
 
+    this.scoreUndoStack.push( this.score );
+    this.scoreRedoStack = [];
+
     this.score += this.getMoveScore(this.rows);
 
     this.rows = this.updateProps(this.rows);
@@ -248,6 +254,7 @@ function Game(_opts) {
 
   this.checkWin = () => {
     const size = this.rows.length;
+    this.maxBlockValue = NEW_BLOCK_VAL_LOW;
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         if (this.rows[y][x].val >= this.maxBlockValue) {
@@ -255,7 +262,6 @@ function Game(_opts) {
         }
       }
     }
-
     if (this.maxBlockValue >= opts.goal) {
       this.status = 'win';
       return true;
@@ -283,17 +289,21 @@ function Game(_opts) {
   this.undo = () => {
     if (this.boardUndoStack.length) {
       this.status = 'active';
-      const redo = this.rows;
+      const redo = this.rows, redoScore = this.score;
       this.rows = this.boardUndoStack.pop();
+      this.score = this.scoreUndoStack.pop();
       this.boardRedoStack.push(redo);
+      this.scoreRedoStack.push(redoScore);
     }
   };
 
   this.redo = () => {
     if (this.boardRedoStack.length) {
-      const undo = this.rows;
+      const undo = this.rows, undoScore = this.score;
       this.rows = this.boardRedoStack.pop();
+      this.score = this.scoreRedoStack.pop();
       this.boardUndoStack.push(undo);
+      this.scoreUndoStack.push(undoScore);
       this.checkWin();
       this.checkLoss();
     }

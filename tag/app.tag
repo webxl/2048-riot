@@ -8,16 +8,18 @@
         <size if="{ settingSize() }"></size>
       </div>
       <div class="undoWrapper">
-        <button id="undo" onclick={undoClick}>Undo</button>
-        <button id="redo" onclick={redoClick}>Redo</button>
+        <button id="undo" onclick={undoClick} disabled={ getUndoDisabledProp() }>Undo</button>
+        <button id="redo" onclick={redoClick} disabled={ getRedoDisabledProp() }>Redo</button>
       </div>
     </div>
+
+    <goal title="Use the arrow keys or swipe to get at least one block face value to 2048">2048</goal>
 
     <score></score>
 
   </header>
-  <winlose if={ gameStatus == 'win' } >YOU WIN</winlose>
-  <winlose if={ gameStatus == 'loss' } >YOU LOSE</winlose>
+  <winlose if={ gameStatus == 'win' } class='win'>YOU WIN</winlose>
+  <winlose if={ gameStatus == 'loss' }  class='lose'>YOU LOSE</winlose>
 
 
   <board name="board" game={ game }></board>
@@ -187,6 +189,14 @@
 
     showSizeDropdown() {
       this.settingBoardSize = !this.settingBoardSize;
+    }
+
+    getUndoDisabledProp() {
+      return this.game.boardUndoStack.length ? '':'disabled';
+    }
+
+    getRedoDisabledProp() {
+      return this.game.boardRedoStack.length ? '':'disabled';
     }
 
   </script>

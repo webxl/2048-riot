@@ -42,6 +42,7 @@
 
     this.game.newGame();
 
+    this.goal = this.game.opts.goal;
 
     this.gameScore = 0;
 

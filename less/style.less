@@ -122,10 +122,36 @@ header {
 }
 
 goal {
+  cursor: help;
   font-size: 1.2em;
   flex-basis: 80px;
   font-weight: bold;
   text-shadow: 1px 1px 4px #ddd;
+}
+
+about {
+  position: absolute;
+  z-index: 1000;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  top: 0;
+  left: 0;
+
+  > div {
+    background-color: rgba(255,255,255,.8);
+
+    height: 200px;
+    width: 400px;
+
+    margin: auto;
+    padding: 20px;
+  }
+
+  .close {
+    cursor: pointer;
+    float: right;
+  }
 }
 
 .controls {

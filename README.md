@@ -7,6 +7,8 @@ undo & redo, mostly for debugging ;).
 its own special template syntax, but keeps HTML and JS separate. It's a bit lighter weight and has a few extra bells and
 whistles, such as an global event emitter and a router.
 
+Play it here: http://webxl.net/2048/
+
 #### ToDos
 
 * Clean up UI & animations

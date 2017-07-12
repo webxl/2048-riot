@@ -35,7 +35,7 @@ module.exports = function(config) {
       'test/game.js': ['babel'],
       'js/game.js': ['babel']
     },
-   reporters: ['mocha'],
+    reporters: ['mocha'],
     riotPreprocessor: {
       options: {
         type: 'babel'

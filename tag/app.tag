@@ -13,7 +13,9 @@
       </div>
     </div>
 
-    <goal title="Use the arrow keys or swipe to get at least one block face value to 2048">2048</goal>
+    <goal title="Use the arrow keys or swipe to get at least one block face value to 2048" onclick={showAbout}>2048</goal>
+
+    <about if={ aboutVisible } ></about>
 
     <score></score>
 
@@ -23,7 +25,6 @@
 
 
   <board name="board" game={ game }></board>
-
 
   <div class="status">
     Game status: <input onkeydown={handleKeyDown} onkeypress={handleKeyPress}  onclick={updateGame} id='input' name='test' value='{ gameStatus }' readonly />
@@ -42,6 +43,8 @@
     this.game.newGame();
 
     this.gameScore = 0;
+
+    this.aboutVisible = false;
 
     this.settingBoardSize = false;
 
@@ -197,6 +200,10 @@
 
     getRedoDisabledProp() {
       return this.game.boardRedoStack.length ? '':'disabled';
+    }
+
+    showAbout() {
+      this.aboutVisible = true;
     }
 
   </script>

@@ -88,6 +88,8 @@ function Game(_opts) {
     gameBlocks = this.getStartBlocks(gameBlocks, this.boardSize);
 
     this.rows = [];
+    this.score = 0;
+    
     for (let i = 0; i < this.boardSize; i++) {
       const row = [];
       for (let j = 0; j < this.boardSize; j++) {

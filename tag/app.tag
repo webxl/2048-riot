@@ -116,7 +116,19 @@
 
     handleKeyDown(e) {
 
+      // ctrl/cmd-z
+      if (e.keyCode === 90 && (e.metaKey || e.ctrlKey)) {
+        this.undoClick();
+        return;
+      }
       e.preventUpdate = true;
+
+      // allow browser shortcuts like refresh page
+      // broken because of automatic e.preventDefault I think (need riot.js v3?)
+      if (e.metaKey || e.ctrlKey) {
+        return;
+      }
+
       const keys = {
         37: 'left',
         38: 'up',

@@ -24,10 +24,17 @@ board {
   flex: 1;
 }
 
-block {
+.font-sizer {
+  position: absolute;
+  z-index: 0;
+  border: 1px solid blue;
+  visibility: hidden;
+}
+
+block, .block {
   align-items: center;
   background-color: rgba(255, 255, 255, .5);
-  display: flex;
+  display: inline-flex;
   //font-size: calc(~"8vw + 6vh");
   font-weight: bold;
   height: 100%;
@@ -54,7 +61,7 @@ block {
   //}
 }
 
-space {
+space, .space {
   background-color: lightgray;
   display: inline-block;
   margin: 5px;
@@ -80,11 +87,19 @@ winlose {
   font-size: 15vw;
   position: absolute;
   top: 43%;
-  z-index: 500;
   text-shadow: 3px -2px #000, 6px -4px #fff;
   width: 100%;
   text-align: center;
   left: 0;
+  opacity: 0;
+  transition: opacity .5s;
+
+  &.win, &.lose {
+    opacity: 1;
+    //z-index: 500;
+  }
+
+
 }
 
 .win {

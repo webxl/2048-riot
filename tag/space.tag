@@ -1,5 +1,5 @@
 <space>
-  <block if={ opts.bv.val != 0 } bv={ opts.bv } new={ opts.new } combined={ opts.combined } moving={ isMoving(y,x) }  >
+  <block if={ opts.bv.val != 0 } bv={ opts.bv } new={ opts.new } combined={ opts.combined } moving={ isMoving(y,x) } fontSize={ getFontSize() }  >
   </block>
   <script>
 
@@ -10,6 +10,10 @@
 
     isMoving(y,x) {
       return this.boardRows[y][x].delta.dx || this.boardRows[y][x].delta.dy;
+    }
+
+    getFontSize() {
+      return this.parent.getFontSize('' + opts.bv.val);
     }
 
 //    var self = this;

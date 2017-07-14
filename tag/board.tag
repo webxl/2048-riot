@@ -2,10 +2,16 @@
   <div class="row" each={ row, y in boardRows }>
     <space each= { tmp, x in row } bv={ getVal(y, x) } new={ isNew(y,x) } x={x} y={y} combined={ isCombined(y,x) } class={ new: isNew(y,x) }></space>
   </div>
+  <div class="row font-sizer" >
+    <div class="space"><div class="block" name="sizer_block"><label name="sizer_block_label">2048</label></div></div>
+  </div>
 
   <script>
     this.game = opts.game;
     this.timeout = null;
+    this.fontSizes = {};
+
+    const minFontSize = 5, maxFontSize = 100;
 
     function cloneMatrix(matrix) {
       var size = matrix.length, newMatrix = new Array(size);
@@ -42,15 +48,14 @@
     this.parent.on('newgame', () => {
       this.boardRows = cloneMatrix(this.game.rows);
       this.update();
+      this.fontSizes = {};
     });
 
     this.parent.on('move', (dir) => {
       this.trigger('move');
       if (dir) {
 
-        //this.boardRows = cloneMatrix(this.game.rows);
-        if (this.game.gameStatus() != 'active') return;
-
+        if (this.game.gameStatus() !== 'active') return;
 
         if (this.timeout) {
           return;
@@ -61,13 +66,11 @@
         vent.trigger('moveblocks');
 
         this.timeout = setTimeout(() => {
-              if (dir) this.game.processMove(dir);
-              this.boardRows = cloneMatrix(this.game.rows);
-              this.update();
-            this.parent.trigger('moved');
-          //vent.trigger('moved', this.boardRows);
+          if (dir) this.game.processMove(dir);
+          this.update({ boardRows: this.game.rows});
+          this.parent.trigger('moved');
           this.timeout = null;
-          }, 100);
+        }, 100);
 
       } else {
           this.boardRows = this.game.rows;
@@ -94,6 +97,76 @@
     this.on('before-update', function() {
       vent.off('*');
     });
+
+    setFontSizes(boardDimensions)
+    {
+      let space = this.root.querySelectorAll('div:nth-child(1) > space:nth-child(1)')[0];
+
+      if (!space) { // children aren't mounted
+        return;
+      }
+
+      this.fontSizes[boardDimensions] = {};
+
+      let testGoal = this.game.opts.goal, test = 2, label = this.sizer_block_label, block = this.sizer_block;
+      let y = maxFontSize, compressor = .2;
+
+      block.style.width = space.clientWidth + 'px';
+      block.style.height = space.clientHeight + 'px';
+
+      let el = block;
+
+      let initialComputed = Math.max(Math.min(el.clientWidth / (compressor*10),
+          Math.min(el.clientHeight, maxFontSize)), minFontSize) + 'px';
+
+      while (test <= testGoal) {
+        el.style.fontSize = initialComputed;
+        label.innerHTML = test;
+        if ((el.offsetHeight < el.scrollHeight) || (el.offsetWidth < el.scrollWidth)) {
+          while (((el.offsetHeight < el.scrollHeight) || (el.offsetWidth < el.scrollWidth)) && y > minFontSize) {
+            el.style.fontSize = y + 'px';
+            y--;
+          }
+        }
+
+        this.fontSizes[boardDimensions]["" + test] = el.style.fontSize;
+
+        test *= 2;
+      }
+    }
+
+    this.on('update', function() {
+      let boardDimensions =  `${this.root.clientHeight}x${this.root.clientWidth}`;
+
+      if (!this.fontSizes[boardDimensions] && this.isMounted) {
+        this.setFontSizes(boardDimensions);
+      }
+
+    });
+
+    getFontSize(value) {
+      let boardDimensions =  `${this.root.clientHeight}x${this.root.clientWidth}`;
+
+      if (!this.fontSizes[boardDimensions] && this.isMounted) {
+        this.setFontSizes(boardDimensions);
+      }
+
+      if (!this.fontSizes[boardDimensions]) {
+
+        let space = this.root.querySelectorAll('div:nth-child(1) > space:nth-child(1)')[0];
+
+        if (!space) { // children aren't mounted
+          let compressor = .2, length = this.boardRows.length, spaceMargin = 10;
+          let sliceWidth = (this.root.clientWidth / length) - (2 * spaceMargin),
+            sliceHeight = (this.root.clientHeight / length) - (2 * spaceMargin);
+
+          return Math.max(Math.min(sliceWidth / (compressor * 10),
+              Math.min(sliceHeight, maxFontSize)), minFontSize) + 'px';;
+        }
+      }
+
+      return this.fontSizes[boardDimensions][value];
+    }
 
 
   </script>

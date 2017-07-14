@@ -20,9 +20,8 @@
     <score></score>
 
   </header>
-  <winlose if={ gameStatus == 'win' } class='win'>YOU WIN</winlose>
-  <winlose if={ gameStatus == 'loss' }  class='lose'>YOU LOSE</winlose>
 
+  <winlose class='{gameStatus}' gamestatus="{gameStatus.toUpperCase()}"></winlose>
 
   <board name="board" game={ game }></board>
 

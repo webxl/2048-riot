@@ -17,6 +17,29 @@ body {
   font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
   margin: 0;
 }
+header {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px ;
+}
+header > * {
+  flex: 1;
+}
+goal {
+  cursor: help;
+  font-size: 1.2em;
+  flex-basis: 80px;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px #ddd;
+}
+score > div {
+  background-color: lightgray;
+  border-radius: 4px;
+  display: inline-block;
+  float: right;
+  padding: 5px;
+  text-align: center;
+}
 board {
   box-sizing: border-box;
   display: flex;
@@ -28,16 +51,41 @@ board {
   top: 85px;
   bottom: 0;
 }
-.row {
+board .row {
   display: flex;
   flex-direction: row;
   flex: 1;
 }
-.font-sizer {
+board .row.font-sizer {
   position: absolute;
   z-index: 0;
   border: 1px solid blue;
   visibility: hidden;
+}
+space,
+.space {
+  background-color: lightgray;
+  display: inline-block;
+  margin: 5px;
+  position: relative;
+  width: 33.3%;
+}
+space.new,
+.space.new {
+  background: rgba(220, 220, 220, 0.5);
+}
+space.new block,
+.space.new block {
+  background: rgba(255, 255, 0, 0.5);
+}
+space > div,
+.space > div {
+  background-color: lightgray;
+  border-radius: 4px;
+  display: inline-block;
+  float: right;
+  padding: 5px;
+  text-align: center;
 }
 block,
 .block {
@@ -59,27 +107,12 @@ block > label,
   display: block;
   flex: 1;
 }
-space,
-.space {
-  background-color: lightgray;
-  display: inline-block;
-  margin: 5px;
-  position: relative;
-  width: 25%;
-}
-space.new,
-.space.new {
-  background: rgba(220, 220, 220, 0.5);
-}
-space.new block,
-.space.new block {
-  background: rgba(255, 255, 0, 0.5);
-}
 block,
 space {
   border-radius: 8px;
 }
 winlose {
+  color: #fff;
   font-family: 'Bowlby One', cursive;
   font-size: 15vw;
   position: absolute;
@@ -92,43 +125,14 @@ winlose {
   transition: opacity .5s;
 }
 winlose.win,
-winlose.lose {
+winlose.loss {
   opacity: 1;
 }
-.win {
+winlose.win {
   color: #A71818;
 }
-.lose {
+winlose.loss {
   color: #8CCDCD;
-}
-score > div {
-  background-color: lightgray;
-  border-radius: 4px;
-  display: inline-block;
-  float: right;
-  padding: 5px;
-  text-align: center;
-}
-.status {
-  position: absolute;
-  left: -1000px;
-}
-header {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px ;
-}
-.controls,
-score,
-goal {
-  flex: 1;
-}
-goal {
-  cursor: help;
-  font-size: 1.2em;
-  flex-basis: 80px;
-  font-weight: bold;
-  text-shadow: 1px 1px 4px #ddd;
 }
 about {
   position: absolute;
@@ -150,10 +154,6 @@ about .close {
   cursor: pointer;
   float: right;
 }
-.controls {
-  flex-grow: 1;
-  flex-basis: 500px;
-}
 button {
   background-color: lightgray;
   border-radius: 4px;
@@ -170,8 +170,16 @@ button:disabled {
   color: gray;
   cursor: not-allowed;
 }
+.status {
+  position: absolute;
+  left: -1000px;
+}
 .no-touch button:hover {
   background-color: #c3c3c3;
+}
+.controls {
+  flex-grow: 1;
+  flex-basis: 500px;
 }
 size {
   background: lightgray;

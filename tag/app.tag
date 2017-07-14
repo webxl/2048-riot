@@ -21,7 +21,7 @@
 
   </header>
 
-  <winlose class='{gameStatus}' gamestatus="{gameStatus.toUpperCase()}"></winlose>
+  <winlose class='{gameStatus}' gamestatus="{gameStatus}"></winlose>
 
   <board name="board" game={ game }></board>
 

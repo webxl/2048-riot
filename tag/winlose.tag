@@ -15,7 +15,13 @@
     }, false);
 
     getStatus() {
-      const newMsg = 'YOU ' + opts.gamestatus;
+      let verb = '';
+      switch (opts.gamestatus) {
+        case 'win': verb = 'won'; break;
+        case 'loss': verb = 'lose'; break;
+        default: verb = '?'; break;
+      }
+      const newMsg = 'YOU ' + verb.toUpperCase();
       if (opts.gamestatus.toLowerCase() != 'active') {
         prevMsg = newMsg
         this.root.style.zIndex = 500;

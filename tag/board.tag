@@ -1,9 +1,9 @@
 <board>
   <div class="row" each={ row, y in boardRows }>
-    <space each= { tmp, x in row } bv={ getVal(y, x) } new={ isNew(y,x) } x={x} y={y} combined={ isCombined(y,x) } class={ new: isNew(y,x) }></space>
+    <space each= { tmp, x in row } bv={ parent.getVal(parent.y, x) } new={ parent.isNew(parent.y,x) } x={x} y={y} combined={ parent.isCombined(parent.y,x) } class={ new: parent.isNew(parent.y,x) }></space>
   </div>
   <div class="row font-sizer" >
-    <div class="space"><div class="block" name="sizer_block"><label name="sizer_block_label">2048</label></div></div>
+    <div class="space"><div class="block" ref="sizer_block"><label ref="sizer_block_label">2048</label></div></div>
   </div>
 
   <script>
@@ -87,6 +87,7 @@
     }
 
     isCombined(y,x) {
+      if (!this.lastBoardRows || !this.lastBoardRows.length) return;
       return this.lastBoardRows[y][x].delta.combined;
     }
 
@@ -108,7 +109,7 @@
 
       this.fontSizes[boardDimensions] = {};
 
-      let testGoal = this.game.opts.goal, test = 2, label = this.sizer_block_label, block = this.sizer_block;
+      let testGoal = this.game.opts.goal, test = 2, label = this.refs.sizer_block_label, block = this.refs.sizer_block;
       let y = maxFontSize, compressor = .2;
 
       block.style.width = space.clientWidth + 'px';

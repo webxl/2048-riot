@@ -1,5 +1,5 @@
 <space>
-  <block if={ opts.bv.val != 0 } bv={ opts.bv } new={ opts.new } combined={ opts.combined } moving={ isMoving(y,x) } fontSize={ getFontSize() }  >
+  <block if={ opts.bv.val != 0 } bv={ opts.bv } new={ opts.new } combined={ opts.combined } fontSize={ getFontSize() }  >
   </block>
   <script>
 
@@ -9,7 +9,7 @@
 
 
     isMoving(y,x) {
-      return this.boardRows[y][x].delta.dx || this.boardRows[y][x].delta.dy;
+      return this.parent.boardRows[y][x].delta.dx || this.parent.boardRows[y][x].delta.dy;
     }
 
     getFontSize() {

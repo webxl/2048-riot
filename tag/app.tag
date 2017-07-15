@@ -23,10 +23,10 @@
 
   <winlose class='{gameStatus}' gamestatus="{gameStatus}"></winlose>
 
-  <board name="board" game={ game }></board>
+  <board ref="board" game={ game }></board>
 
   <div class="status">
-    Game status: <input onkeydown={handleKeyDown} onkeypress={handleKeyPress}  onclick={updateGame} id='input' name='test' value='{ gameStatus }' readonly />
+    Game status: <input onkeydown={handleKeyDown} onkeypress={handleKeyPress}  onclick={updateGame} ref='input' name='test' value='{ gameStatus }' readonly />
   </div>
 
   <script>
@@ -34,20 +34,16 @@
     const DRAG_ENABLED = false;
 
     this.boardSize = 4;
+    this.gameScore = 0;
+    this.aboutVisible = false;
+    this.settingBoardSize = false;
 
     this.game = new Game({
       size: this.boardSize
     });
-
     this.game.newGame();
 
     this.goal = this.game.opts.goal;
-
-    this.gameScore = 0;
-
-    this.aboutVisible = false;
-
-    this.settingBoardSize = false;
 
     this.isTouchEnabled = ("ontouchstart" in document.documentElement);
 
@@ -57,7 +53,7 @@
 
       document.documentElement.className += (this.isTouchEnabled ? ' touch' : ' no-touch');
 
-      const mc = new Hammer.Manager(this.board);
+      const mc = new Hammer.Manager(this.refs.board.root);
 
       const swipe = new Hammer.Swipe({
         threshold: 20
@@ -121,13 +117,8 @@
         this.undoClick();
         return;
       }
-      e.preventUpdate = true;
 
-      // allow browser shortcuts like refresh page
-      // broken because of automatic e.preventDefault I think (need riot.js v3?)
-      if (e.metaKey || e.ctrlKey) {
-        return;
-      }
+      e.preventUpdate = true;
 
       const keys = {
         37: 'left',
@@ -160,7 +151,7 @@
     setFocus(e) {
       if (this.isTouchEnabled) return;
 
-      this.input.focus();
+      this.refs.input.focus();
       if (e) e.preventUpdate = true;
     }
 
@@ -170,24 +161,24 @@
 
     undoClick() {
       this.game.undo();
-      this.trigger('move moved');
+      this.trigger('move');
     }
 
     redoClick() {
       this.game.redo();
-      this.trigger('move moved');
+      this.trigger('move');
     }
 
-    this.on('moved', () => {
+    this.on('move', () => {
       this.gameStatus = this.game.gameStatus();
       this.gameScore = this.game.score;
       this.update(/*{ gameStatus: this.game.gameStatus() }*/);
     });
 
     handleKeyPress(e) {
+
       if (!(e.ctrlKey || e.metaKey || e.altKey)) {
         e.stopPropagation();
-        e.preventDefault();
       }
     }
 

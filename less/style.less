@@ -22,6 +22,7 @@ goal {
   font-size: 1.2em;
   flex-basis: 80px;
   font-weight: bold;
+  margin-right: 5px;
   text-shadow: 1px 1px 4px #ddd;
 }
 
@@ -86,10 +87,12 @@ space, .space {
 block, .block {
   align-items: center;
   background-color: rgba(255, 255, 255, .5);
+  box-sizing: border-box;
   display: inline-flex;
   font-weight: bold;
   height: 100%;
   text-align: center;
+  padding: 4px;
   position: absolute;
   top: 0;
   left: 0;
@@ -108,12 +111,13 @@ block, space {
 }
 
 winlose {
-  color: #fff;
+  color: fade(#fff, 45%);
   font-family: 'Bowlby One', cursive;
   font-size: 15vw;
   position: absolute;
   top: 43%;
-  text-shadow: 3px -2px #000, 6px -4px #fff;
+  text-shadow: -4px 3px 2px fade(#000, 20%), 3px -2px 2px fade(#fff, 45%);
+
   width: 100%;
   text-align: center;
   left: 0;
@@ -125,32 +129,33 @@ winlose {
   }
 
   &.win {
-    color: @color-14;
+    color: fade(@color-14, 70%);
   }
 
   &.loss {
-    color: @color-2;
+    color: fade(@color-2, 70%);
   }
 
 }
 
 about {
-  position: absolute;
-  z-index: 1000;
+  display: flex;
   height: 100%;
   width: 100%;
-  display: flex;
+  position: absolute;
+  z-index: 1000;
   top: 0;
   left: 0;
 
   > div {
     background-color: rgba(255,255,255,.8);
+    border-radius: @defaultBorderRadius / 2;
 
     height: 200px;
     width: 400px;
 
     margin: auto;
-    padding: 20px;
+    padding: 6px 15px;
   }
 
   .close {
@@ -174,7 +179,7 @@ button {
   margin-right: 5px;
   padding: 8px 12px;
 
-  &:disabled {
+  &[__disabled] {
     color: gray;
     cursor: not-allowed;
   }

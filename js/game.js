@@ -87,6 +87,10 @@ function Game(_opts) {
     opts = Object.assign({}, opts, newOpts);
     this.boardSize = opts.size;
     this.maxBlockValue = 2;
+    this.boardUndoStack = [];
+    this.boardRedoStack = [];
+    this.scoreUndoStack = [];
+    this.scoreRedoStack = [];
 
     let newGoal;
 

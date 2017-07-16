@@ -21,7 +21,7 @@
         case 'loss': verb = 'lose'; break;
         default: verb = '?'; break;
       }
-      const newMsg = 'YOU ' + verb.toUpperCase() + '!';
+      const newMsg = `YOU ${verb.toUpperCase()}!`;
       if (opts.gamestatus && opts.gamestatus.toLowerCase() !== 'active') {
         prevMsg = newMsg;
         this.root.style.zIndex = 500;

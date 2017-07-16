@@ -59,6 +59,28 @@ board {
   }
 }
 
+@keyframes highlight1 {
+  0% {
+    background: rgba(255, 216, 88, 0.96);
+  }
+  100% {
+    background: @color-0;
+  }
+}
+
+@keyframes highlight2 {
+  0% {
+    background: rgba(255, 4, 121, 0.87);
+  }
+  100% {
+    background: @color-1;
+  }
+}
+
+#highlight:target {
+  animation: highlight 1s;
+}
+
 space, .space {
   background-color: lightgray;
   display: inline-block;
@@ -67,10 +89,13 @@ space, .space {
   width: 33.3%;
 
   &.new {
-    background: rgba(220, 220, 220, .5);
 
     block {
-      background: rgba(255, 255, 0, .5);
+      animation: highlight1 2s;
+
+      &.level2 {
+        animation: highlight2 2s;
+      }
     }
   }
 
@@ -164,8 +189,6 @@ about {
   }
 }
 
-
-
 button {
   background-color: lightgray;
   border-radius: 4px;
@@ -185,7 +208,6 @@ button {
   }
 
 }
-
 
 .status {
   position: absolute;

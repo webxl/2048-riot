@@ -1,13 +1,14 @@
 <block class={ this.getLevelClass() } riot-style="font-size: { opts.fontsize }">
-  <label animate={ this.getAnimations() }  animate-leave="zoomOut" animate-duration="300ms">{ opts.bv.val }</label>
+  <label animate={ this.getAnimations() }  animate-leave="zoomOut" animate-duration="500ms">{ opts.bv.val }</label>
 
   <script>
     this.mixin(riotAnimate);
 
     this.getAnimations = () => {
       const classes = [];
-      if (opts.new)
+      if (this.opts.new) {
         classes.push('bounceIn');
+      }
       if (this.opts.combined)
         classes.push('flipInY');
       if (this.moving)

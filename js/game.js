@@ -440,7 +440,9 @@ function Game(_opts) {
     for (let y = 0; y < size; y++) {
       newMatrix[y] = new Array(size);
       for (let x = 0; x < size; x++) {
+        let oldProps = matrix[y][x];
         newMatrix[y][x] = getDefaults(y, x, matrix[y][x].val, this.possibleMoves(matrix, y, x));
+        newMatrix[y][x].isNew = oldProps.isNew; // todo: why are we using getDefaults above?
       }
     }
     return newMatrix;

@@ -64,6 +64,25 @@ board .row.font-sizer {
   border: 1px solid blue;
   visibility: hidden;
 }
+@keyframes highlight1 {
+  0% {
+    background: rgba(255, 216, 88, 0.96);
+  }
+  100% {
+    background: #FFE4AF;
+  }
+}
+@keyframes highlight2 {
+  0% {
+    background: rgba(255, 4, 121, 0.87);
+  }
+  100% {
+    background: #FFAFAF;
+  }
+}
+#highlight:target {
+  animation: highlight 1s;
+}
 space,
 .space {
   background-color: lightgray;
@@ -72,13 +91,13 @@ space,
   position: relative;
   width: 33.3%;
 }
-space.new,
-.space.new {
-  background: rgba(220, 220, 220, 0.5);
-}
 space.new block,
 .space.new block {
-  background: rgba(255, 255, 0, 0.5);
+  animation: highlight1 2s;
+}
+space.new block.level2,
+.space.new block.level2 {
+  animation: highlight2 2s;
 }
 space > div,
 .space > div {

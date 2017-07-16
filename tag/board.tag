@@ -65,6 +65,7 @@
 
         vent.trigger('moveblocks');
 
+        // necessary for slide animation
         this.timeout = setTimeout(() => {
           if (dir) this.game.processMove(dir);
           this.update({ boardRows: this.game.rows});

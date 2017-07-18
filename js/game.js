@@ -1,68 +1,50 @@
-if (typeof Object.assign !== 'function') {
-  Object.assign = function(target) {
-    'use strict';
-    if (target === null) {
-      throw new TypeError('Cannot convert undefined or null to object');
-    }
+const DEFAULT_SIZE = 4;
+const DEFAULT_GOAL = 2048;
+const DEFAULT_NEW_BLOCK_COUNT = 1;
+const NEW_BLOCK_VAL_HIGH = 4;
+const NEW_BLOCK_VAL_LOW = 2;
+const HIGH_LOW_RATIO = .75;
+const HIGH_BLOCK_PERMITTED = 1 / 256;
 
-    target = Object(target);
-    for (let index = 1; index < arguments.length; index++) {
-      const source = arguments[index];
-      if (source !== null) {
-        for (let key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-    }
-    return target;
-  };
-}
+class Game {
 
-function Game(_opts) {
+  constructor(_opts) {
 
-  const DEFAULT_SIZE = 4;
-  const DEFAULT_GOAL = 2048;
-  const DEFAULT_NEW_BLOCK_COUNT = 1;
-  const NEW_BLOCK_VAL_HIGH = 4;
-  const NEW_BLOCK_VAL_LOW = 2;
-  const HIGH_LOW_RATIO = .75;
-  const HIGH_BLOCK_PERMITTED = 1 / 256;
+    let opts = Object.assign({
+      size: DEFAULT_SIZE,
+      goal: DEFAULT_GOAL,
+      newBlockCount: DEFAULT_NEW_BLOCK_COUNT,
 
-  let opts = Object.assign({
-    size: DEFAULT_SIZE,
-    goal: DEFAULT_GOAL,
-    newBlockCount: DEFAULT_NEW_BLOCK_COUNT,
+    }, _opts);
 
-  }, _opts);
+    this.boardUndoStack = [];
+    this.boardRedoStack = [];
+    this.scoreUndoStack = [];
+    this.scoreRedoStack = [];
 
-  this.boardUndoStack = [];
-  this.boardRedoStack = [];
-  this.scoreUndoStack = [];
-  this.scoreRedoStack = [];
+    this.score = 0;
+    this.opts = opts;
 
-  this.score = 0;
-  this.opts = opts;
+  }
 
-  this.getStartBlocks = (blocks, boardSize) => {
+  getStartBlocks (blocks, boardSize) {
     const loc = [Math.floor(boardSize * Math.random()), Math.floor(boardSize * Math.random())];
-    if (!blocks.some(b => b[0] == loc[0] && b[1] == loc[1])) {
+    if (!blocks.some(b => b[0] === loc[0] && b[1] === loc[1])) {
       blocks.push(loc);
       return blocks;
     } else {
       return this.getStartBlocks(blocks, boardSize);
     }
-  };
+  }
 
-  this.gameStatus = () => {
+  gameStatus () {
     return this.status;
-  };
+  }
 
-  this.getNewBlocks = (matrix, count, newBlocks) => {
-    if (0 == count--) return newBlocks;
+  getNewBlocks (matrix, count, newBlocks) {
+    if (0 === count--) return newBlocks;
     const boardSize = matrix.length, available = [];
-    const newMatrix = cloneMatrix(matrix);
+    const newMatrix = Game.cloneMatrix(matrix);
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
         if (!matrix[i][j].val) available.push({y: i, x: j});
@@ -75,16 +57,16 @@ function Game(_opts) {
     newBlocks.push(c);
     newMatrix[c.y][c.x].val = 2;
     return this.getNewBlocks(newMatrix, count, newBlocks);
-  };
+  }
 
-  this.maybeGetBlock = (blocks, x, y) => {
-    const val = blocks.some(b => b[0] == x && b[1] == y) ? 2 : 0;
+  maybeGetBlock (blocks, x, y) {
+    const val = blocks.some(b => b[0] === x && b[1] === y) ? 2 : 0;
     return { val, combined: false, startY: y, startX: x, moved: 0 };
-  };
+  }
 
-  this.newGame = (newOpts) => {
+  newGame (newOpts) {
     this.status = 'active';
-    opts = Object.assign({}, opts, newOpts);
+    let opts = Object.assign({}, this.opts, newOpts);
     this.boardSize = opts.size;
     this.maxBlockValue = 2;
     this.boardUndoStack = [];
@@ -117,11 +99,11 @@ function Game(_opts) {
       }
       this.rows.push(row);
     }
-    this.rows = this.updateProps(this.rows);
-  };
+    this.rows = Game.updateProps(this.rows);
+  }
 
-  this.combineValuesUp = (matrix, secondPass) => {
-    const size = matrix.length, combined = cloneMatrix(matrix);
+  combineValuesUp (matrix, secondPass) {
+    const size = matrix.length, combined = Game.cloneMatrix(matrix);
 
     for (let x = 0; x < size; x++) {
       let size_r = size;
@@ -157,9 +139,9 @@ function Game(_opts) {
       return this.combineValuesUp(combined, true);
     }
     return combined;
-  };
+  }
 
-  this.getBlockMovements = direction => {
+  getBlockMovements (direction) {
     const size = this.rows.length, blocks = [];
 
     const preview = this.moveBlocks(direction);
@@ -210,24 +192,13 @@ function Game(_opts) {
     }
 
     return blocks;
-  };
+  }
 
-  this.possibleMoves = (matrix, y, x)  => {
-    const size = this.rows.length, moves = [];
-    const nbs = [[-1, 0, 'up'], [0, -1, 'left'], [0, 1, 'right'], [1, 0, 'down']];
-    for (let j=0; j<nbs.length; j++) {
-      const y1 = y + nbs[j][0], x1 = x + nbs[j][1];
-      if (x1 >= 0 && y1 >= 0 && x1 < size && y1 < size) {
-        if (matrix[y][x].val && (matrix[y1][x1].val == matrix[y][x].val || !matrix[y1][x1].val))
-          moves.push(nbs[j][2]);
-      }
-    }
-    return moves;
-  };
+  getNewBlockValue (notRandom) {
+    return (this.maxBlockValue >= this.opts.goal * HIGH_BLOCK_PERMITTED && (notRandom || Math.random() > HIGH_LOW_RATIO)) ? NEW_BLOCK_VAL_HIGH: NEW_BLOCK_VAL_LOW;
+  }
 
-  this.getNewBlockValue = (notRandom) => (this.maxBlockValue >= opts.goal * HIGH_BLOCK_PERMITTED && (notRandom || Math.random() > HIGH_LOW_RATIO)) ? NEW_BLOCK_VAL_HIGH: NEW_BLOCK_VAL_LOW;
-
-  this.processMove = direction => {
+  processMove (direction) {
 
     const size = this.rows.length, moves = [];
 
@@ -251,25 +222,24 @@ function Game(_opts) {
 
     if (this.checkWin()) return;
 
-    this.newBlocks = this.getNewBlocks(this.rows, opts.newBlockCount, []);
+    this.newBlocks = this.getNewBlocks(this.rows, this.opts.newBlockCount, []);
     const newVal = this.getNewBlockValue();
     this.newBlocks.forEach(c => {
-      Object.assign(this.rows[c.y][c.x], getDefaults(c.y, c.x, newVal, null), { isNew: true });
-
+      Object.assign(this.rows[c.y][c.x], Game.getDefaults(c.y, c.x, newVal, []), { isNew: true });
     });
 
     this.scoreUndoStack.push( this.score );
     this.scoreRedoStack = [];
 
-    this.score += this.getMoveScore(this.rows);
+    this.score += this.getMoveScore();
 
-    this.rows = this.updateProps(this.rows);
+    this.rows = Game.updateProps(this.rows);
 
     this.checkLoss();
 
-  };
+  }
 
-  this.checkWin = () => {
+  checkWin () {
     const size = this.rows.length;
     this.maxBlockValue = NEW_BLOCK_VAL_LOW;
     for (let y = 0; y < size; y++) {
@@ -279,31 +249,33 @@ function Game(_opts) {
         }
       }
     }
-    if (this.maxBlockValue >= opts.goal) {
+    if (this.maxBlockValue >= this.opts.goal) {
       this.status = 'win';
       return true;
     }
 
     return false;
-  };
+  }
 
-  this.checkLoss = () => {
+  checkLoss () {
     const size = this.rows.length, moves = [];
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         moves.push(this.rows[y][x].possibleMoves);
       }
     }
-    if (!moves.some(b => b.length != 0)) {
+    if (!moves.some(b => b.length !== 0)) {
       this.status = 'loss'; return true;
     }
 
     return false;
-  };
+  }
 
-  this.moveBlocks = direction => this.transformMatrix(direction, this.combineValuesUp);
+  moveBlocks (direction) {
+    return this.transformMatrix(direction, this.combineValuesUp);
+  }
 
-  this.undo = () => {
+  undo () {
     if (this.boardUndoStack.length) {
       this.status = 'active';
       const redo = this.rows, redoScore = this.score;
@@ -312,9 +284,9 @@ function Game(_opts) {
       this.boardRedoStack.push(redo);
       this.scoreRedoStack.push(redoScore);
     }
-  };
+  }
 
-  this.redo = () => {
+  redo () {
     if (this.boardRedoStack.length) {
       const undo = this.rows, undoScore = this.score;
       this.rows = this.boardRedoStack.pop();
@@ -324,12 +296,43 @@ function Game(_opts) {
       this.checkWin();
       this.checkLoss();
     }
+  }
+
+  getMoveScore () {
+    let moveScore = 0, matrix = this.rows;
+    const size = matrix.length;
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        if (matrix[y][x].combined) {
+          moveScore += matrix[y][x].val;
+        }
+      }
+    }
+    return moveScore;
   };
 
+  transformMatrix (direction, combineFn) {
+    switch (direction) {
+      case 'left':
+        return Game.rotate('left', combineFn.call(this, Game.rotate('right', this.rows)));
+        break;
+      case 'right':
+        return Game.rotate('right', combineFn.call(this, Game.rotate('left', this.rows)));
+        break;
+      case 'up':
+        return combineFn.call(this, this.rows);
+        break;
+      case 'down':
+        return Game.flip(combineFn.call(this, Game.flip(this.rows)));
+        break;
+      default:
+        return; break;
+    }
+  };
 
   // matrix helpers
 
-  this.transpose = matrix => {
+  static transpose (matrix) {
     const size = matrix.length, trans = new Array(size);
     for (let y = 0; y < size; y++) {
       trans[y] = new Array(size);
@@ -340,7 +343,7 @@ function Game(_opts) {
     return trans;
   };
 
-  this.reverseEachRow = matrix => {
+  static reverseEachRow (matrix) {
 
     const size = matrix.length, reversed = new Array(size);
     for (let y = 0; y < size; y++) {
@@ -352,7 +355,7 @@ function Game(_opts) {
     return reversed;
   };
 
-  this.reverseEachColumn = matrix => {
+  static reverseEachColumn (matrix) {
 
     const size = matrix.length, reversed = new Array(size);
     for (let y = 0; y < size; y++) {
@@ -365,7 +368,7 @@ function Game(_opts) {
     return reversed;
   };
 
-  this.printMatrix = (matrix) => {
+  static printMatrix (matrix) {
     const size = matrix.length;
     console.log('----');
     for (let y = 0; y < size; y++) {
@@ -378,53 +381,47 @@ function Game(_opts) {
     console.log('----');
   };
 
-  this.rotate = (direction, matrix) => {
+  static rotate (direction, matrix) {
     switch (direction) {
       case 'left':
-        return this.reverseEachColumn(this.transpose(matrix));
+        return Game.reverseEachColumn(Game.transpose(matrix));
       case 'right':
-        return this.reverseEachRow(this.transpose(matrix));
+        return Game.reverseEachRow(Game.transpose(matrix));
       default:
         break;
     }
     return matrix;
   };
 
-  this.flip = matrix => {
-    return this.reverseEachRow(this.reverseEachColumn(cloneMatrix(matrix)));
+  static flip (matrix) {
+    return Game.reverseEachRow(Game.reverseEachColumn(Game.cloneMatrix(matrix)));
   };
 
-  this.transformMatrix = (direction, combineFn) => {
-    switch (direction) {
-      case 'left':
-        return this.rotate('left', combineFn.call(this, this.rotate('right', this.rows)));
-        break;
-      case 'right':
-        return this.rotate('right', combineFn.call(this, this.rotate('left', this.rows)));
-        break;
-      case 'up':
-        return combineFn.call(this, this.rows);
-        break;
-      case 'down':
-        return this.flip(combineFn.call(this, this.flip(this.rows)));
-        break;
-      default:
-        return; break;
-    }
-  };
-
-  this.addProps = (matrix) => {
+  static addProps (matrix) {
     const size = matrix.length, newMatrix = new Array(size);
     for (let y = 0; y < size; y++) {
       newMatrix[y] = new Array(size);
       for (let x = 0; x < size; x++) {
-        newMatrix[y][x] = getDefaults(y, x, matrix[y][x], []);
+        newMatrix[y][x] = Game.getDefaults(y, x, matrix[y][x], []);
       }
     }
-    return this.updateProps(newMatrix);
+    return Game.updateProps(newMatrix);
   };
 
-  this.removeProps = (matrix) => {
+  static possibleMoves (matrix, y, x)  {
+    const size = matrix.length, moves = [];
+    const nbs = [[-1, 0, 'up'], [0, -1, 'left'], [0, 1, 'right'], [1, 0, 'down']];
+    for (let j=0; j<nbs.length; j++) {
+      const y1 = y + nbs[j][0], x1 = x + nbs[j][1];
+      if (x1 >= 0 && y1 >= 0 && x1 < size && y1 < size) {
+        if (matrix[y][x].val && (matrix[y1][x1].val === matrix[y][x].val || !matrix[y1][x1].val))
+          moves.push(nbs[j][2]);
+      }
+    }
+    return moves;
+  }
+
+  static removeProps (matrix) {
     const size = matrix.length, newMatrix = new Array(size);
     for (let y = 0; y < size; y++) {
       newMatrix[y] = Array(size);
@@ -435,33 +432,20 @@ function Game(_opts) {
     return newMatrix;
   };
 
-  this.updateProps = (matrix) => {
+  static updateProps (matrix) {
     const size = matrix.length, newMatrix = new Array(size);
     for (let y = 0; y < size; y++) {
       newMatrix[y] = new Array(size);
       for (let x = 0; x < size; x++) {
         let oldProps = matrix[y][x];
-        newMatrix[y][x] = getDefaults(y, x, matrix[y][x].val, this.possibleMoves(matrix, y, x));
+        newMatrix[y][x] = Game.getDefaults(y, x, matrix[y][x].val, Game.possibleMoves(matrix, y, x));
         newMatrix[y][x].isNew = oldProps.isNew; // todo: why are we using getDefaults above?
       }
     }
     return newMatrix;
   };
 
-  this.getMoveScore = (matrix) => {
-    let moveScore = 0;
-    const size = matrix.length;
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (matrix[y][x].combined) {
-          moveScore += matrix[y][x].val;
-        }
-      }
-    }
-    return moveScore;
-  };
-
-  function getDefaults (y, x, val, moves) {
+  static getDefaults (y, x, val, moves) {
     return {
       val: val,
       combined: false,
@@ -472,7 +456,8 @@ function Game(_opts) {
       isNew: false
     }
   }
-  function cloneMatrix(matrix) {
+
+  static cloneMatrix (matrix) {
     const size = matrix.length, newMatrix = new Array(size);
     for (let y = 0; y < size; y++) {
       newMatrix[y] = Array(size);
@@ -488,3 +473,24 @@ function Game(_opts) {
 
 }
 
+if (typeof Object.assign !== 'function') {
+  Object.assign = function(target) {
+    'use strict';
+    if (target === null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+    for (let index = 1; index < arguments.length; index++) {
+      const source = arguments[index];
+      if (source !== null) {
+        for (let key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+}

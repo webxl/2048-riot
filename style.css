@@ -39,7 +39,20 @@ score > div {
   display: inline-block;
   float: right;
   padding: 5px;
+  position: relative;
   text-align: center;
+}
+score > div .plus {
+  bottom: 0;
+  color: #fff;
+  text-shadow: -2px 2px 6px rgba(0, 0, 0, 0.8);
+  position: absolute;
+  visibility: hidden;
+  width: 100%;
+  margin-left: -5px;
+}
+score > div .plus.animated {
+  visibility: visible;
 }
 board {
   box-sizing: border-box;
@@ -66,7 +79,7 @@ board .row.font-sizer {
 }
 @keyframes highlight1 {
   0% {
-    background: rgba(255, 216, 88, 0.96);
+    background: #ffe185;
   }
   100% {
     background: #FFE4AF;
@@ -74,7 +87,7 @@ board .row.font-sizer {
 }
 @keyframes highlight2 {
   0% {
-    background: rgba(255, 4, 121, 0.87);
+    background: #ea7070;
   }
   100% {
     background: #FFAFAF;
@@ -190,7 +203,7 @@ button {
   margin-right: 5px;
   padding: 8px 12px;
 }
-button[__disabled] {
+button[disabled] {
   color: gray;
   cursor: not-allowed;
 }

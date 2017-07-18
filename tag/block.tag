@@ -70,7 +70,7 @@
 
     this.drag = (dir, dx, dy) => {
 
-      if (!self.opts.bv.possibleMoves.some(m => m === dir)) return;
+      if (!Game.possibleMoves.some(m => m === dir)) return;
 
       const translate = `translate3d(${dx}px, ${dy}px, 0)`;
       self.root.style.transform = translate;

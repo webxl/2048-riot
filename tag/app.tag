@@ -17,7 +17,7 @@
 
     <about if={ aboutVisible } goal="{goal}"></about>
 
-    <score></score>
+    <score gamescore={ gameScore } diffscore={ getDiffScore() }></score>
 
   </header>
 
@@ -115,6 +115,7 @@
       // ctrl/cmd-z
       if (e.keyCode === 90 && (e.metaKey || e.ctrlKey)) {
         this.undoClick();
+        e.preventDefault();
         return;
       }
 
@@ -126,7 +127,9 @@
         39: 'right',
         40: 'down'
       };
+
       this.sendMove(keys[e.keyCode]);
+
     }
 
     sendMove(dir) {
@@ -210,6 +213,14 @@
 
     showAbout() {
       this.aboutVisible = true;
+    }
+
+    let curScore = 0;
+
+    getDiffScore() {
+      let diff = this.gameScore - curScore;
+      curScore = this.gameScore;
+      return diff;
     }
 
   </script>

@@ -69,7 +69,7 @@
         this.timeout = setTimeout(() => {
           if (dir) this.game.processMove(dir);
           this.update({ boardRows: this.game.rows});
-          this.parent.trigger('moved');
+          this.parent.trigger('move');
           this.timeout = null;
         }, 100);
 
